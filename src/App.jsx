@@ -331,7 +331,7 @@ export default function HHKBCalculator() {
         }
 
         .display-area::before {
-          content: 'HHKB CALC';
+          content: 'HHKB CALC2';
           position: absolute;
           top: 14px; left: 50%;
           transform: translateX(-50%);
