@@ -339,6 +339,7 @@ export default function HHKBCalculator() {
           letter-spacing: 5px;
           color: #9999aa;
           font-weight: 500;
+          white-space: nowrap;
         }
 
         .display-area::after {
@@ -402,41 +403,41 @@ export default function HHKBCalculator() {
         .key-num {
           background: #323236;
           box-shadow:
-            0 5px 0 #141416,
-            inset -2px 0 0 rgba(0,0,0,0.35),
-            inset 2px 0 0 rgba(255,255,255,0.04),
-            inset 0 1px 0 rgba(255,255,255,0.09),
-            inset 0 3px 6px rgba(0,0,0,0.25);
+            0 6px 0 #0e0e10,
+            inset -2px 0 0 rgba(0,0,0,0.4),
+            inset 2px 0 0 rgba(255,255,255,0.06),
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            inset 0 3px 8px rgba(0,0,0,0.3);
         }
 
         .key-fn {
           background: #2c2a28;
           box-shadow:
-            0 5px 0 #111110,
-            inset -2px 0 0 rgba(0,0,0,0.35),
-            inset 2px 0 0 rgba(255,255,255,0.03),
-            inset 0 1px 0 rgba(255,255,255,0.07),
-            inset 0 3px 6px rgba(0,0,0,0.28);
+            0 6px 0 #0a0a09,
+            inset -2px 0 0 rgba(0,0,0,0.4),
+            inset 2px 0 0 rgba(255,255,255,0.04),
+            inset 0 1px 0 rgba(255,255,255,0.09),
+            inset 0 3px 8px rgba(0,0,0,0.32);
         }
 
         .key-op {
           background: #2e2818;
           box-shadow:
-            0 5px 0 #100e06,
-            inset -2px 0 0 rgba(0,0,0,0.4),
-            inset 2px 0 0 rgba(255,255,255,0.04),
-            inset 0 1px 0 rgba(201,169,110,0.15),
-            inset 0 3px 6px rgba(0,0,0,0.3);
+            0 6px 0 #0a0900,
+            inset -2px 0 0 rgba(0,0,0,0.45),
+            inset 2px 0 0 rgba(255,255,255,0.05),
+            inset 0 1px 0 rgba(201,169,110,0.2),
+            inset 0 3px 8px rgba(0,0,0,0.35);
         }
 
         .key-eq {
           background: #3e3018;
           box-shadow:
-            0 5px 0 #181208,
-            inset -2px 0 0 rgba(0,0,0,0.4),
-            inset 2px 0 0 rgba(255,255,255,0.05),
-            inset 0 1px 0 rgba(240,216,152,0.2),
-            inset 0 3px 6px rgba(0,0,0,0.25);
+            0 6px 0 #100c04,
+            inset -2px 0 0 rgba(0,0,0,0.45),
+            inset 2px 0 0 rgba(255,255,255,0.06),
+            inset 0 1px 0 rgba(240,216,152,0.25),
+            inset 0 3px 8px rgba(0,0,0,0.3);
         }
 
         .key.pressed,
