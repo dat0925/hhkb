@@ -374,11 +374,11 @@ export default function HHKBCalculator() {
         }
 
         .keys-plate {
-          background: #171719;
-          padding: 10px 10px 14px;
+          background: #111113;
+          padding: 12px 12px 16px;
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 7px;
+          gap: 9px;
         }
 
         .key {
@@ -390,7 +390,7 @@ export default function HHKBCalculator() {
           position: relative;
           -webkit-tap-highlight-color: transparent;
           user-select: none;
-          border-radius: 6px;
+          border-radius: 8px;
           transition: transform 0.07s cubic-bezier(0.25,0.46,0.45,0.94),
                       box-shadow 0.07s cubic-bezier(0.25,0.46,0.45,0.94);
         }
@@ -401,43 +401,43 @@ export default function HHKBCalculator() {
         }
 
         .key-num {
-          background: #323236;
+          background: #38383c;
           box-shadow:
-            0 6px 0 #0e0e10,
+            0 8px 0 #050507,
             inset -2px 0 0 rgba(0,0,0,0.4),
-            inset 2px 0 0 rgba(255,255,255,0.06),
-            inset 0 1px 0 rgba(255,255,255,0.12),
-            inset 0 3px 8px rgba(0,0,0,0.3);
+            inset 2px 0 0 rgba(255,255,255,0.07),
+            inset 0 1px 0 rgba(255,255,255,0.15),
+            inset 0 3px 8px rgba(0,0,0,0.28);
         }
 
         .key-fn {
-          background: #2c2a28;
+          background: #302e2c;
           box-shadow:
-            0 6px 0 #0a0a09,
+            0 8px 0 #050504,
             inset -2px 0 0 rgba(0,0,0,0.4),
             inset 2px 0 0 rgba(255,255,255,0.04),
-            inset 0 1px 0 rgba(255,255,255,0.09),
-            inset 0 3px 8px rgba(0,0,0,0.32);
+            inset 0 1px 0 rgba(255,255,255,0.1),
+            inset 0 3px 8px rgba(0,0,0,0.3);
         }
 
         .key-op {
-          background: #2e2818;
+          background: #332a16;
           box-shadow:
-            0 6px 0 #0a0900,
+            0 8px 0 #050400,
             inset -2px 0 0 rgba(0,0,0,0.45),
             inset 2px 0 0 rgba(255,255,255,0.05),
-            inset 0 1px 0 rgba(201,169,110,0.2),
-            inset 0 3px 8px rgba(0,0,0,0.35);
+            inset 0 1px 0 rgba(201,169,110,0.22),
+            inset 0 3px 8px rgba(0,0,0,0.33);
         }
 
         .key-eq {
-          background: #3e3018;
+          background: #453420;
           box-shadow:
-            0 6px 0 #100c04,
+            0 8px 0 #0a0804,
             inset -2px 0 0 rgba(0,0,0,0.45),
             inset 2px 0 0 rgba(255,255,255,0.06),
-            inset 0 1px 0 rgba(240,216,152,0.25),
-            inset 0 3px 8px rgba(0,0,0,0.3);
+            inset 0 1px 0 rgba(240,216,152,0.28),
+            inset 0 3px 8px rgba(0,0,0,0.28);
         }
 
         .key.pressed,
