@@ -191,7 +191,7 @@ export default function HHKBCalculator() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+    
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
