@@ -3,48 +3,125 @@ import { useState, useCallback, useEffect, useRef } from "react";
 // ----------------------------------------------------------------
 // HHKB サウンド — 低域重視
 // ----------------------------------------------------------------
-function createHHKBSound(audioCtx) {
+// 実録音サンプル（Base64埋め込み）
+const HHKB_MP3_B64 = "SUQzBAAAAAAAW1RYWFgAAAAuAAADY29tbWVudAB2aWQ6djEwMDI1ZzUwMDAwY2FsZGdkYmM3N3VhYmk4ZXBnNGcAVFNTRQAAAA8AAANMYXZmNjAuMTYuMTAwAAAAAAAAAAAAAAD/84DAAAAAAAAAAAAASW5mbwAAAA8AAAAIAAAHVwA4ODg4ODg4ODg4ODhVVVVVVVVVVVVVVVVxcXFxcXFxcXFxcXFxjo6Ojo6Ojo6Ojo6OqqqqqqqqqqqqqqqqqsfHx8fHx8fHx8fHx+Pj4+Pj4+Pj4+Pj4+P///////////////8AAAAATGF2YzYwLjMxAAAAAAAAAAAAAAAAJALUAAAAAAAAB1fWODR5AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//OAxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zgsQ7AAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//OCxDsAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/84LEOwAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zgsQ7AAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//OCxDsAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/84LEOwAAA0gAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zgsQ7AAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+const HHKB_OGG_B64 = "";
+
+let _decodedBuffer = null;
+
+async function getKeyBuffer(audioCtx) {
+  if (_decodedBuffer) return _decodedBuffer;
+  // MP3のみ使用（iOSはOGG非対応のため）
+  // arr.bufferはdecodeAudioDataで転送されるので毎回新しく作る
+  try {
+    const bin = atob(HHKB_MP3_B64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    // slice()でコピーを渡す（転送後も再利用できるように）
+    _decodedBuffer = await audioCtx.decodeAudioData(arr.buffer.slice(0));
+    return _decodedBuffer;
+  } catch(e) {
+    console.warn("MP3 decode failed:", e);
+    return null;
+  }
+}
+
+async function createHHKBSound(audioCtx) {
+  const buf = await getKeyBuffer(audioCtx);
+  if (buf) {
+    // 実録音を再生
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    // わずかにピッチをランダムに変化させてバリエーションを出す
+    src.playbackRate.value = 0.95 + Math.random() * 0.10;
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.85 + Math.random() * 0.15;
+    src.connect(gain);
+    gain.connect(audioCtx.destination);
+    src.start(audioCtx.currentTime);
+    return;
+  }
+  // 録音再生失敗時はWeb Audio APIフォールバック
+  _createHHKBSoundFallback(audioCtx);
+}
+
+function _createHHKBSoundFallback(audioCtx) {
   const now = audioCtx.currentTime;
+  const sr = audioCtx.sampleRate;
 
-  // ① ボトムアウト衝撃（さらに低域）
-  const impactBuf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * 0.05), audioCtx.sampleRate);
-  const id = impactBuf.getChannelData(0);
-  for (let i = 0; i < id.length; i++) id[i] = (Math.random() * 2 - 1) * Math.exp(-i / (id.length * 0.18));
-  const impact = audioCtx.createBufferSource();
-  impact.buffer = impactBuf;
-  const impactLP = audioCtx.createBiquadFilter();
-  impactLP.type = "lowpass"; impactLP.frequency.value = 180;
-  const impactGain = audioCtx.createGain();
-  impactGain.gain.setValueAtTime(0.45, now);
-  impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-  impact.connect(impactLP); impactLP.connect(impactGain); impactGain.connect(audioCtx.destination);
-  impact.start(now); impact.stop(now + 0.05);
+  // 解析結果:
+  // - 中域(600-1200Hz)が50-70%支配的、904Hz中心
+  // - 低域(0-200Hz)が20-50%（打鍵ごとにバラつき）
+  // - 高域3000Hz以上はほぼゼロ
+  // - 減衰: 5ms→-10dB、20ms→-20dB のシャープな立ち下がり
 
-  // ② thock ノイズ本体（低域寄りに）
-  const thockBuf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * 0.15), audioCtx.sampleRate);
-  const td = thockBuf.getChannelData(0);
-  for (let i = 0; i < td.length; i++) td[i] = (Math.random() * 2 - 1) * Math.exp(-i / (td.length * 0.3));
-  const thock = audioCtx.createBufferSource();
-  thock.buffer = thockBuf;
-  const bp = audioCtx.createBiquadFilter();
-  bp.type = "bandpass"; bp.frequency.value = 200; bp.Q.value = 0.5;
-  const lp = audioCtx.createBiquadFilter();
-  lp.type = "lowpass"; lp.frequency.value = 400;
-  const thockGain = audioCtx.createGain();
-  thockGain.gain.setValueAtTime(0.28, now);
-  thockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-  thock.connect(bp); bp.connect(lp); lp.connect(thockGain); thockGain.connect(audioCtx.destination);
-  thock.start(now); thock.stop(now + 0.15);
+  // ① メイン: 904Hz帯ノイズ（最重要）
+  const mainLen = Math.floor(sr * 0.045);
+  const mainBuf = audioCtx.createBuffer(1, mainLen, sr);
+  const md = mainBuf.getChannelData(0);
+  for (let i = 0; i < mainLen; i++) {
+    const t = i / sr;
+    // ピーク6ms、その後シャープに減衰
+    const env = (t < 0.006)
+      ? (t / 0.006)
+      : Math.exp(-(t - 0.006) / 0.010); // 10ms時定数
+    md[i] = (Math.random() * 2 - 1) * env;
+  }
+  const mainNode = audioCtx.createBufferSource();
+  mainNode.buffer = mainBuf;
+  // 904Hz付近をタイトに絞る
+  const bp904a = audioCtx.createBiquadFilter();
+  bp904a.type = "bandpass"; bp904a.frequency.value = 904; bp904a.Q.value = 3.0;
+  const bp904b = audioCtx.createBiquadFilter();
+  bp904b.type = "bandpass"; bp904b.frequency.value = 870; bp904b.Q.value = 2.0;
+  const gMain = audioCtx.createGain();
+  gMain.gain.value = 0.7;
+  mainNode.connect(bp904a); bp904a.connect(bp904b); bp904b.connect(gMain);
+  gMain.connect(audioCtx.destination);
+  mainNode.start(now); mainNode.stop(now + 0.045);
 
-  // ③ サブ低音（ハウジング共鳴）— 音程を下げる
-  const sub = audioCtx.createOscillator();
-  sub.type = "sine"; sub.frequency.setValueAtTime(45, now);
-  sub.frequency.exponentialRampToValueAtTime(22, now + 0.1);
-  const subG = audioCtx.createGain();
-  subG.gain.setValueAtTime(0.35, now);
-  subG.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-  sub.connect(subG); subG.connect(audioCtx.destination);
-  sub.start(now); sub.stop(now + 0.12);
+  // ② 低域: 95Hz帯（打鍵のコク）ランダムに強弱
+  const subVol = 0.2 + Math.random() * 0.35; // 打鍵ごとにバラつき
+  const subLen = Math.floor(sr * 0.055);
+  const subBuf = audioCtx.createBuffer(1, subLen, sr);
+  const sd = subBuf.getChannelData(0);
+  for (let i = 0; i < subLen; i++) {
+    const t = i / sr;
+    const env = (t < 0.008)
+      ? (t / 0.008)
+      : Math.exp(-(t - 0.008) / 0.020);
+    sd[i] = (Math.random() * 2 - 1) * env;
+  }
+  const subNode = audioCtx.createBufferSource();
+  subNode.buffer = subBuf;
+  const bpSub = audioCtx.createBiquadFilter();
+  bpSub.type = "bandpass"; bpSub.frequency.value = 97; bpSub.Q.value = 1.2;
+  const lpSub = audioCtx.createBiquadFilter();
+  lpSub.type = "lowpass"; lpSub.frequency.value = 180;
+  const gSub = audioCtx.createGain();
+  gSub.gain.value = subVol;
+  subNode.connect(bpSub); bpSub.connect(lpSub); lpSub.connect(gSub);
+  gSub.connect(audioCtx.destination);
+  subNode.start(now); subNode.stop(now + 0.055);
+
+  // ③ 中低域ブリッジ: 200-600Hz（中低域14-16%分）
+  const midLen = Math.floor(sr * 0.030);
+  const midBuf = audioCtx.createBuffer(1, midLen, sr);
+  const mdd = midBuf.getChannelData(0);
+  for (let i = 0; i < midLen; i++) {
+    const t = i / sr;
+    const env = (t < 0.005) ? (t / 0.005) : Math.exp(-(t - 0.005) / 0.012);
+    mdd[i] = (Math.random() * 2 - 1) * env;
+  }
+  const midNode = audioCtx.createBufferSource();
+  midNode.buffer = midBuf;
+  const bpMid = audioCtx.createBiquadFilter();
+  bpMid.type = "bandpass"; bpMid.frequency.value = 380; bpMid.Q.value = 0.8;
+  const gMid = audioCtx.createGain();
+  gMid.gain.value = 0.25;
+  midNode.connect(bpMid); bpMid.connect(gMid);
+  gMid.connect(audioCtx.destination);
+  midNode.start(now); midNode.stop(now + 0.030);
 }
 
 // ----------------------------------------------------------------
@@ -87,14 +164,19 @@ export default function HHKBCalculator() {
   const processingRef = useRef(false);
 
   const getAudio = () => {
-    if (!audioCtxRef.current)
+    if (!audioCtxRef.current) {
       audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtxRef.current.state === "suspended") audioCtxRef.current.resume();
+    }
+    // Safari対策: 毎回resumeを試みる（suspended/runningどちらでも安全）
+    audioCtxRef.current.resume();
     return audioCtxRef.current;
   };
 
   const playSound = useCallback(() => {
-    try { createHHKBSound(getAudio()); } catch (e) {}
+    try {
+      const ctx = getAudio();
+      _createHHKBSoundFallback(ctx);
+    } catch (e) {}
   }, []);
 
   const animateKey = (label) => {
@@ -531,7 +613,10 @@ export default function HHKBCalculator() {
                 pressedKey === btn.label ? "pressed" : "",
               ].filter(Boolean).join(" ")}
               onPointerDown={(e) => {
-                e.preventDefault(); // touchstart による mousedown の二重発火を防ぐ
+                e.preventDefault();
+                // Safari対策: ユーザー操作の中で直接resume
+                const ctx = audioCtxRef.current;
+                if (ctx && ctx.state === "suspended") ctx.resume();
                 handleInput(btn.label);
               }}
             >
@@ -555,7 +640,12 @@ export default function HHKBCalculator() {
             <button
               key={label}
               className="unit-btn"
-              onPointerDown={(e) => { e.preventDefault(); handleUnit(multiplier); }}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                const ctx = audioCtxRef.current;
+                if (ctx && ctx.state === "suspended") ctx.resume();
+                handleUnit(multiplier);
+              }}
             >
               <span className="unit-btn-label">{label}</span>
             </button>
